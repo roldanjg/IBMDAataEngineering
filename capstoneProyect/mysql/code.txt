@@ -1,0 +1,33 @@
+task1
+
+------------------------------------
+DROP DATABASE IF EXISTS sales;
+CREATE DATABASE IF NOT EXISTS sales;
+USE sales;
+
+SELECT 'CREATING DATABASE STRUCTURE' as 'INFO';
+
+DROP TABLE IF EXISTS sales_data;
+
+/*!50503 set default_storage_engine = InnoDB */;
+/*!50503 select CONCAT('storage engine: ', @@default_storage_engine) as INFO */;
+
+CREATE TABLE sales_data (
+    product_id  INT             NOT NULL,
+    customer_id INT             NOT NULL,
+    price       FLOAT           NOT NULL,
+    quantity    INT             NOT NULL,
+    timestamp   DATETIME        NOT NULL,
+    PRIMARY KEY (product_id)
+);
+--------------------------------------------
+mysql --host=127.0.0.1 --port=3306 --user=joaquingrauj --password=MTk1MTAtam9hcXVp -t < employees.sql
+-----------
+
+task6:
+CREATE INDEX ts ON sales_data(timestamp);
+
+------------------------------------------------
+task6
+#!/usr/bin/env bash
+mysqldump -t --user=root --password=MTk1MTAtam9hcXVp sales sales_data > sales_data.sql

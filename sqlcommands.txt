@@ -1,0 +1,264 @@
+FOR ROWS DMANIPULATIONLAGUAGE:
+SELECT STATEMENT eXAMPLES:
+	FilmLocations( #THE ATRIBUTES OF THE CLASS
+	    Title:              titles of the films, 
+	    ReleaseYear:        time of public release of the films, 
+	    Locations:          locations of San Francisco where the films were shot, 
+	    FunFacts:           funny facts about the filming locations, 
+	    ProductionCompany:  companies who produced the films, 
+	    Distributor:        companies who distributed the films, 
+	    Director:           people who directed the films, 
+	    Writer:             people who wrote the films, 
+	    Actor1:             person 1 who acted in the films, 
+	    Actor2:             person 2 who acted in the films, 
+	    Actor3:             person 3 who acted in the films
+	)
+
+	SELECT Title, ReleaseYear, Locations FROM FilmLocations WHERE ReleaseYear>=2001;
+	SELECT Title, ProductionCompany, ReleaseYear, Locations, Writer FROM FilmLocations WHERE Writer!="James Cameron";
+	<> IS THE SAME AS !=
+	
+COUNT
+	SELECT COUNT(*) FROM FilmLocations; ----> TOTLA NUMBER OF ROWS
+	SELECT COUNT(Locations) FROM FilmLocations WHERE Writer="James Cameron"; --->COUNT OF FILMS DONE 
+
+DISTINCT
+	SELECT  COUNT (DISTINCT (Locations))  FROM FilmLocations WHERE Writer="James Cameron";
+
+LIMIT
+	SELECT * FROM FilmLocations LIMIT 25; --->LIMIT VA SIEMPRE AL FINAL DEL TODO
+	SELECT * FROM FilmLocations LIMIT 15 OFFSET 10; ---> SI SE PONE OFFSET EMPIEZA A CONTAR EN LA LINEA QUE LE DIGAMOS, EN ESTE CASO LA 10, SE SALTA LS 10 PRIMERAS
+INSERT
+	INSERT INTO table_name (column1, column2, ... )
+	VALUES (value1, value2, ... )
+	;
+		INSERT INTO Instructor(ins_id, lastname, firstname, city, country)
+VALUES(4, 'Saha', 'Sandip', 'Edmonton', 'CA');
+	
+UPDATE
+	UPDATE table_name
+	SET column1 = value1, column2 = value2, ...
+	WHERE condition
+	;
+DELETE
+	DELETE FROM table_name
+	WHERE condition
+;
+
+FOR COLS DDEFINITIONLANGUAGE
+
+CREATE:
+
+ALTER:
+	ADD OR REMOVE COLS
+		ALTER TABLE table_name
+		ADD COLUMN column_name data_type column_constraint(EJE BIGINT);
+		
+		ALTER TABLE table_name
+		DROP COLUMN column_name;
+	
+	
+	MODIFY DATA TYPE IN COL
+	
+		ALTER TABLE table_name
+		ALTER COLUMN column_name SET DATA TYPE data_type;
+		ALTER TABLE PETSALE
+		ALTER COLUMN PET SET DATA TYPE VARCHAR(20);
+	
+	ADD OR REMOVE A KEY
+	
+	ADD OR REMOVE CONSTRAINS
+	
+	RENAME COLS
+		ALTER TABLE table_name
+		RENAME COLUMN current_column_name TO new_column_name;
+
+DROP: DELETE TABLE AND DATA INSIDE
+	DROP TABLE PET;
+
+
+TRUNCATE: DELETE ALL DATA IN TABLE
+	TRUNCATE TABLE PET IMMEDIATE;
+	
+LIKE STATEMENT:
+	SELECT F_NAME , L_NAME, ADDRESS
+	FROM EMPLOYEES
+	WHERE ADDRESS LIKE '%Elgin,IL
+
+AND Y BETWEEN
+
+	SELECT *
+	FROM EMPLOYEES
+	WHERE (SALARY BETWEEN 60000 AND 70000) AND DEP_ID = 5;
+
+	SELECT *
+	FROM EMPLOYEES
+	WHERE SALARY >= 60000 AND SALARY <= 70000 AND DEP_ID = 5;
+
+ORDER BY:
+	simple:
+		SELECT F_NAME, L_NAME, DEP_ID 
+		FROM EMPLOYEES
+		ORDER BY DEP_ID;
+	miltiple: you can select ascendent or descendent
+		SELECT F_NAME, L_NAME, DEP_ID 
+		FROM EMPLOYEES
+		ORDER BY DEP_ID DESC, L_NAME DESC;
+GROUP BY :
+	SELECT DEP_ID, COUNT(*)
+	FROM EMPLOYEES
+	GROUP BY DEP_ID;
+
+GROUPING SET:
+	Now suppose you want to generate a similar view, but you also want to include the total sales by salesperson. You can use the GROUPING SETS clause to access both the auto class and salesperson dimensions in the same query. Here is the SQL code you can use to summarize total sales of new autos, both by auto class and by salesperson, all in one expression
+	
+AVERAGE:
+
+	SELECT DEP_ID, COUNT(*), AVG(SALARY)
+	FROM EMPLOYEES
+	GROUP BY DEP_ID;
+AS
+NAME RESULTING COLS:
+	SELECT DEP_ID, COUNT(*) AS "NUM_EMPLOYEES", AVG(SALARY) AS "AVG_SALARY"
+	FROM EMPLOYEES
+	GROUP BY DEP_ID;
+	ORDER BY AVG_SALARY;
+HAVING: select a restriction based on previous selection
+
+	SELECT DEP_ID, COUNT(*) AS "NUM_EMPLOYEES", AVG(SALARY) AS "AVG_SALARY"
+	FROM EMPLOYEES
+	GROUP BY DEP_ID
+	HAVING count(*) < 4
+	ORDER BY AVG_SALARY;
+	
+BUILD IN FUNCTIONS:
+
+SUM()
+	select SUM(COST) from PETRESCUE;
+	select SUM(COST) AS SUM_OF_COST from PETRESCUE;
+MAX()
+	select MAX(QUANTITY) from PETRESCUE;
+AVR()
+	select AVG(COST) from PETRESCUE;
+	select AVG(COST/QUANTITY) from PETRESCUE where ANIMAL = 'Dog';
+	
+ROUND()
+	select ROUND(COST) from PETRESCUE;
+
+LENGTH()
+	select LENGTH(ANIMAL) from PETRESCUE;
+UCASE()
+	select UCASE(ANIMAL) from PETRESCUE;
+	select DISTINCT(UCASE(ANIMAL)) from PETRESCUE;
+LCASE()
+	select LCASE(ANIMAL) from PETRESCUE;
+DAY()
+	select DAY(RESCUEDATE) from PETRESCUE where ANIMAL = 'Cat';
+MONTH():
+	select SUM(QUANTITY) from PETRESCUE where MONTH(RESCUEDATE)='05';
+
+DAYS()
+	select (RESCUEDATE + 3 DAYS) from PETRESCUE;
+CURRENT DATE:
+	select (CURRENT DATE - RESCUEDATE) from PETRESCUE;
+	
+SUBQUERIES
+
+	select EMP_ID, F_NAME, L_NAME, SALARY 
+	from employees 
+	where SALARY < (select AVG(SALARY) 
+		        from employees);
+		        
+	select EMP_ID, SALARY, ( select MAX(SALARY) from employees ) AS MAX_SALARY 
+f	rom employees;
+
+	select * from ( select EMP_ID, F_NAME, L_NAME, DEP_ID from employees) AS EMP4ALL;
+
+MULTIPLE TABLES:
+	Sub-Queries:
+		select * from employees where JOB_ID IN (select JOB_IDENT from jobs where JOB_TITLE= 'Jr. Designer');
+		select JOB_TITLE, MIN_SALARY,MAX_SALARY,JOB_IDENT from jobs where JOB_IDENT IN (select JOB_ID from employees where YEAR(B_DATE)>1976 );
+		select JOB_TITLE, MIN_SALARY,MAX_SALARY,JOB_IDENT from jobs where JOB_IDENT IN (select JOB_ID from employees where YEAR(B_DATE)>1976 and SEX='F' );
+	implicit Joins:
+		cartesian/cross join:
+			select * from employees, jobs;
+		
+		select * from employees, jobs where employees.JOB_ID = jobs.JOB_IDENT;
+		select * from employees E, jobs J where E.JOB_ID = J.JOB_IDENT;
+		select EMP_ID,F_NAME,L_NAME, JOB_TITLE from employees E, jobs J where E.JOB_ID = J.JOB_IDENT;
+		select E.EMP_ID,E.F_NAME,E.L_NAME, J.JOB_TITLE from employees E, jobs J where E.JOB_ID = J.JOB_IDENT;
+
+views:
+	CREATE VIEW EMPSALARY AS 
+	SELECT EMP_ID, F_NAME, L_NAME, B_DATE, SEX, SALARY
+	FROM EMPLOYEES;
+	
+	CREATE OR REPLACE VIEW EMPSALARY  AS 
+	SELECT EMP_ID, F_NAME, L_NAME, B_DATE, SEX, JOB_TITLE, MIN_SALARY, MAX_SALARY
+	FROM EMPLOYEES, JOBS
+	WHERE EMPLOYEES.JOB_ID = JOBS.JOB_IDENT;
+	
+	DROP VIEW EMPSALARY;
+	
+STORE PROCEDURE:
+
+	--#SET TERMINATOR @
+	CREATE PROCEDURE RETRIEVE_ALL       -- Name of this stored procedure routine
+
+	LANGUAGE SQL                        -- Language used in this routine 
+	READS SQL DATA                      -- This routine will only read data from the table
+
+	DYNAMIC RESULT SETS 1               -- Maximum possible number of result-sets to be returned to the caller query
+
+	BEGIN 
+
+	    DECLARE C1 CURSOR               -- CURSOR C1 will handle the result-set by retrieving records row by row from the table
+	    WITH RETURN FOR                 -- This routine will return retrieved records as a result-set to the caller query
+	    
+	    SELECT * FROM PETSALE;          -- Query to retrieve all the records from the table
+	    
+	    OPEN C1;                        -- Keeping the CURSOR C1 open so that result-set can be returned to the caller query
+
+	END
+	@                                   -- Routine termination character
+	
+	DROP PROCEDURE RETRIEVE_ALL;
+	
+	
+	--#SET TERMINATOR @
+	CREATE PROCEDURE UPDATE_SALEPRICE ( 
+	    IN Animal_ID INTEGER, IN Animal_Health VARCHAR(5) )     -- ( { IN/OUT type } { parameter-name } { data-type }, ... )
+
+	LANGUAGE SQL                                                -- Language used in this routine
+	MODIFIES SQL DATA                                           -- This routine will only write/modify data in the table
+
+	BEGIN 
+
+	    IF Animal_Health = 'BAD' THEN                           -- Start of conditional statement
+		UPDATE PETSALE
+		SET SALEPRICE = SALEPRICE - (SALEPRICE * 0.25)
+		WHERE ID = Animal_ID;
+	    
+	    ELSEIF Animal_Health = 'WORSE' THEN
+		UPDATE PETSALE
+		SET SALEPRICE = SALEPRICE - (SALEPRICE * 0.5)
+		WHERE ID = Animal_ID;
+		
+	    ELSE
+		UPDATE PETSALE
+		SET SALEPRICE = SALEPRICE
+		WHERE ID = Animal_ID;
+
+	    END IF;                                                 -- End of conditional statement
+	    
+	END
+	@                                                           -- Routine termination character
+	
+	CALL RETRIEVE_ALL;
+
+	CALL UPDATE_SALEPRICE(1, 'BAD');        -- Caller query
+
+	CALL RETRIEVE_ALL;
+	
+	DROP PROCEDURE UPDATE_SALEPRICE;
+

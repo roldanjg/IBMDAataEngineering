@@ -1,0 +1,57 @@
+Welcome to “Understanding Memory Resources
+for Apache Spark.” After watching this video, you will be able
+to: Describe memory parameters. Describe Spark memory management. Describe Spark data persistence. Explain how to set executor memory on submit. Explain how to set memory for Spark Standalone
+memory and cores. When running a Spark application, the driver
+and executor processes launch with an upper memory limit. The upper memory limit enables a Spark application
+to run without using all the available cluster memory, but this limit also requires that
+the memory limits are set high enough to perform necessary tasks. An application runs best when processes complete
+within the requested memory. If the driver and executor processes exceed
+the memory requirements, this situation can result in poor performance with data spilling
+to disk or even out-of-memory errors. Let’s examine some memory setting considerations
+for both executors and drivers. Executors use memory for processing and additional
+memory if caching is enabled. However, excessive caching can lead to out-of-memory
+errors. Collecting data as a result of operations
+will be done in the driver. Driver memory loads the data, broadcasts variables, and
+handles results, such as collections. Because large data sets can easily exceed
+the driver’s memory capacity, if collecting to the driver, filter the data and use a subset
+of the data. In Spark, executor memory and storage memory
+share a unified regions shown in this Java Heap Space in the space labeled M. When no executor memory is used, storage can
+acquire all the available memory and vice versa. Executor memory can evict storage memory if
+necessary, but only until total storage memory usage falls under a certain threshold. In other words, R describes a subregion within
+M where cached blocks are never evicted. Storage is not allowed to evict executor memory
+due to complexities in implementation. This design ensures several preferable properties. First, applications that do not use caching
+can use the entire space for executor memory, obviating unnecessary disk spills. Second, applications that do use caching can
+reserve a minimum storage space, the area labeled R, where their data blocks are immune
+to being evicted. Lastly, this approach provides reasonable
+out-of-the-box performance for a variety of workloads without requiring user expertise
+of how memory is divided internally. Next, let’s explore data persistence in
+Spark. Data persistence, or caching data, in Spark
+means being able to store intermediate calculations for reuse. By setting persistence in either or both memory
+and disk. After the intermediate data is calculated to produce a new DataFrame, and if memory
+is cached, then any other operations on that DataFrame can reuse the same data, rather
+than re-loading data from the source and re-calculating all prior operations. This capability is essential to speed machine
+learning workloads that often require many iterations over the same data set when training
+a model. This sample PySpark code creates a DataFrame
+with column features consisting of random values. After creating the DataFrame, the ‘cache()`
+method is called to mark the random values to cache in memory. Caching the DataFrame here means that the
+application only needs to generate random features once. At this point, the random values are not yet
+generated; caching is done lazily after computing the values. In this example, the `count()` action is invoked
+on the DataFrame, which generates the values that are then stored in memory. Subsequent DataFrame calls can use the cached
+values, which can save a great deal of computational time if the cost to recreate a DataFrame is
+high. If this DataFrame is not cached, then different
+random features would be generated with each action on the DataFrame, because the function
+`rand()` is called each time. There are several ways to set the memory for
+executors in a cluster, such as setting a value in the properties file. However, the more common practice is to specify
+a memory configuration when submitting the application to the cluster. You can tailor memory so that each application
+has enough memory to run effectively but does not use all available memory in the executor. This example configures the application to
+run on a Spark standalone cluster and reserves ten gibibytes per executor when running tasks. If using the Spark Standalone cluster to manage
+and start a worker manually, you can specify the total memory and CPU cores that the application
+can use. These specifications determine the resources
+available when workers start the executors. Avoid assigning more resources than are available
+on the physical machine. For instance, if the machine has a CPU with
+eight cores and the worker starts with 16 cores, too many threads might run simultaneously
+and cause performance degradation. You can tailor memory so that each application
+has enough memory to run effectively but does not use all available memory in the executor. The default configuration is to use all available
+memory minus 1giigabyte for all available cores. In this video, you learned that: Spark has configurable memory for executor
+and driver processes. Executor memory and Storage memory share a
+region that can be tuned as needed. Caching data can help improve application performance.

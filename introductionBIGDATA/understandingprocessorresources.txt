@@ -1,0 +1,48 @@
+Welcome to “Understanding Processor Resources
+for Apache Spark.” After watching this video, you will be able
+to: Explain how Apache Spark uses processor cores. Describe how to use Spark to configure cores
+for an application. Just as with memory, CPU cores are a resource
+assigned to both the driver and executor processes. An executor can process tasks in parallel
+only up to the number of cores assigned to the application. Once the application tasks finish processing,
+the cores no longer in use return to the available pool. The workers in the cluster contain a limited
+number of cores. If no cores are available to an application,
+the application must wait for currently running tasks to finish. When Spark launches an application and creates
+tasks, Spark places those tasks in a scheduling queue. Spark assigns tasks to any available executor. The default behavior is for each task that
+is ready, to be scheduled to an executor with available cores to maximize parallelism. Any remaining tasks will have to wait in the
+queue until more cores become available. If you provided specific settings for the
+number of cores, such as configuring how many cores the executor uses, the application overrides
+the default behavior. To configure executor cores on application
+submission, use the argument `- - executor-cores` followed by the specific number of cores required
+for the application tasks to run on an executor. As always, if the executor does not have the
+required number of cores available, tasks do not start until the specified number of
+cores are free or another executor becomes available. Alternatively, the argument `- -total-executor-cores`
+followed by a number is the total amount of cores throughout the cluster to use for the
+application, not per executor process. Tasks will be scheduled to executors whenever
+they have a free core, until the total number of cores reaches the specified value. When starting a worker manually in a Spark
+standalone cluster, you can specify the number of cores the application uses by using the
+argument `- - cores` followed by the number of cores. Spark’s default behavior is to use all available
+cores. A common practice is to start one worker per
+node, which under default behavior, allows the worker to create one executor process
+with exactly the same number of threads as cores available to run tasks. If another process is running on the same
+machine as the worker, such as the master, then a good practice is to apply these settings
+to reduce the number of cores available to the worker. Specifying the total number of CPU cores can
+reserve processing time available for the master process so essential operations are
+not blocked and time out. Let’s look at an example that uses a small
+standalone cluster with one worker node and six cores. This example uses two identical applications
+submitted to the same cluster in overlapping time, one right after the other. The first application is submitted to the
+cluster and requests four cores per executor. The executor is currently idle with six cores
+available. The first four tasks of the application are
+then scheduled to the executor and begin to run. Two cores of the executor remain available. While the first application is running, the
+second application is submitted. The second application also requests 4 cores
+from the executor. Because tasks that belong to the first application
+are still running and are using 4 cores, only 2 cores are available. Therefore, the second application must wait
+until the executor has at least four cores available. As soon as any two tasks from the first application
+complete and four cores become available, the second application can begin. What if you start the second application
+and request only two cores to run two tasks? Using this scenario, you can submit a second
+application, and two tasks immediately start. However, the second application might take
+longer to finish because of running only two tasks at a time. Maximizing Spark application performance can
+be a tricky balance between configuration of application workloads and cluster resources
+and requires careful tuning of both the application and the clusters. In this video, you learned that: Spark assigns CPU cores to driver and executor
+processes during application processing, Executors process tasks in parallel according
+to the number of cores available or assigned by the application, If using the Spark Standalone cluster manager,
+you can specify the total memory and CPU cores workers can use.

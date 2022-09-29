@@ -1,0 +1,29 @@
+#download the data file
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0231EN-SkillsNetwork/labs/Final%20Assignment/vehicle-data.csv
+
+#download the sql file
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0231EN-SkillsNetwork/labs/Final%20Assignment/setup.sql
+
+#run the sql file
+
+psql --username=postgres --host=localhost -f setup.sql
+
+#import the csv file
+
+cat vehicle-data.csv | psql --username=postgres -d tolldata --host=localhost -c "copy toll.tolldata from STDIN WITH (FORMAT csv);"
+
+
+Starting your airflow services....
+This process can take up to 15 minutes...
+      
+Airflow started, waiting for all services to be ready....
+      
+Your airflow server is now ready to use and available with username: airflow password: OTgzLWpvYXF1aW5n
+
+You can access your Airflow Webserver at: https://joaquingrauj-8080.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai
+
+CommandLine: 
+ • List DAGs: airflow dags list
+ • List Tasks: airflow tasks list example_bash_operator
+ • Run an example task: airflow tasks test example_bash_operator runme_1 2015-06-01

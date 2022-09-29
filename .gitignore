@@ -1,6 +1,5 @@
-*csv
-*sql
+*.csv
+*.sql
 *.xml
 *.json
 *zip
-*txt

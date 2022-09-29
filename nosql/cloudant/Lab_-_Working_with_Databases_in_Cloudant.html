@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="Lab_-_Working_with_Databases_in_Cloudant_files/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="Lab_-_Working_with_Databases_in_Cloudant_files/default.min.css">
+  <style type="text/css">/* this file is used for labs on cognitiveclass.ai that were written in markdown */
+
+/* applies to images, i.e. "![]()" in markdown */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* add padding and margins */
+body {
+  padding: 10px;
+  margin: 10px;
+}
+
+/* applies to tables, i.e. "|--|--|" in markdown */
+table td,
+table th {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+
+/* applies to using quotes, i.e. ">" in markdown */
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 1em 10px 0.1em 10px;
+  quotes: '\201C''\201D''\2018''\2019';
+}
+
+/* the headers need some spacing */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  padding-top: 20px;
+}
+
+/* Add padding between nested list item */
+ul > li > ul {
+  padding-bottom: 1rem;
+}
+
+.code-badge-language {
+  display: none;
+}
+.code-badge-copy-icon {
+  background: url('data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgZGF0YS1wcmVmaXg9ImZhciIgZGF0YS1pY29uPSJjb3B5IiBjbGFzcz0ic3ZnLWlubGluZS0tZmEgZmEtY29weSBmYS13LTE0IiByb2xlPSJpbWciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDQ0OCA1MTIiPjxwYXRoIGZpbGw9ImN1cnJlbnRDb2xvciIgZD0iTTQzMy45NDEgNjUuOTQxbC01MS44ODItNTEuODgyQTQ4IDQ4IDAgMCAwIDM0OC4xMTggMEgxNzZjLTI2LjUxIDAtNDggMjEuNDktNDggNDh2NDhINDhjLTI2LjUxIDAtNDggMjEuNDktNDggNDh2MzIwYzAgMjYuNTEgMjEuNDkgNDggNDggNDhoMjI0YzI2LjUxIDAgNDgtMjEuNDkgNDgtNDh2LTQ4aDgwYzI2LjUxIDAgNDgtMjEuNDkgNDgtNDhWOTkuODgyYTQ4IDQ4IDAgMCAwLTE0LjA1OS0zMy45NDF6TTI2NiA0NjRINTRhNiA2IDAgMCAxLTYtNlYxNTBhNiA2IDAgMCAxIDYtNmg3NHYyMjRjMCAyNi41MSAyMS40OSA0OCA0OCA0OGg5NnY0MmE2IDYgMCAwIDEtNiA2em0xMjgtOTZIMTgyYTYgNiAwIDAgMS02LTZWNTRhNiA2IDAgMCAxIDYtNmgxMDZ2ODhjMCAxMy4yNTUgMTAuNzQ1IDI0IDI0IDI0aDg4djIwMmE2IDYgMCAwIDEtNiA2em02LTI1NmgtNjRWNDhoOS42MzJjMS41OTEgMCAzLjExNy42MzIgNC4yNDMgMS43NTdsNDguMzY4IDQ4LjM2OGE2IDYgMCAwIDEgMS43NTcgNC4yNDNWMTEyeiI+PC9wYXRoPjwvc3ZnPg==');
+  background-size: 100% 100%;
+}
+
+.code-badge {
+  bottom: 0 !important;
+  top: unset !important;
+  background: unset !important;
+}
+
+.code-badge > .code-badge-check-icon {
+  background: green;
+}
+.code-badge-check-icon {
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0 7px;
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtaGlkZGVuPSJ0cnVlIiBmb2N1c2FibGU9ImZhbHNlIiBkYXRhLXByZWZpeD0iZmFzIiBkYXRhLWljb249ImNoZWNrIiBjbGFzcz0ic3ZnLWlubGluZS0tZmEgZmEtY2hlY2sgZmEtdy0xNiIgcm9sZT0iaW1nIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3R5bGU9IiYjMTA7ICAgIGNvbG9yOiAjMmFmZjMyOyYjMTA7Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0xNzMuODk4IDQzOS40MDRsLTE2Ni40LTE2Ni40Yy05Ljk5Ny05Ljk5Ny05Ljk5Ny0yNi4yMDYgMC0zNi4yMDRsMzYuMjAzLTM2LjIwNGM5Ljk5Ny05Ljk5OCAyNi4yMDctOS45OTggMzYuMjA0IDBMMTkyIDMxMi42OSA0MzIuMDk1IDcyLjU5NmM5Ljk5Ny05Ljk5NyAyNi4yMDctOS45OTcgMzYuMjA0IDBsMzYuMjAzIDM2LjIwNGM5Ljk5NyA5Ljk5NyA5Ljk5NyAyNi4yMDYgMCAzNi4yMDRsLTI5NC40IDI5NC40MDFjLTkuOTk4IDkuOTk3LTI2LjIwNyA5Ljk5Ny0zNi4yMDQtLjAwMXoiLz48L3N2Zz4=');
+  background-size: 100% 100%;
+}
+</style></head>
+  <body>
+    <center>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/IDSNlogo.png" alt="cognitiveclass.ai logo" width="300">
+    </center>
+    <h1>Hands-on Lab: Working with Databases in Cloudant</h1>
+    <p>Estimated time needed: <strong>30</strong> minutes</p>
+    <h2>Objectives</h2>
+    <p>After completing this lab you will be able to:</p>
+    <ul>
+      <li>Create a database through the Cloudant dashboard</li>
+      <li>Insert documents into your database to populate it</li>
+      <li>Query documents with specific criteria</li>
+      <li>Modify documents by updating and deleting them</li>
+    </ul>
+    <h1>Prerequisite</h1>
+    <p>In order to complete this lab, you will need to create an 
+instance of Cloudant on IBM Cloud. If you haven't yet created one, you 
+can create one by referring to the <a href="https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0151EN-SkillsNetwork/labs/Cloudant/Lab%20-%20Sign%20Up%20for%20an%20IBM%20Cloudant%20Instance/Lab_-_Sign_Up_for_an_IBM_Cloudant_Instance.md.html?utm_medium=Exinfluencer&amp;utm_source=Exinfluencer&amp;utm_content=000026UJ&amp;utm_term=10006555&amp;utm_id=NA-SkillsNetwork-Channel-SkillsNetworkCoursesIBMDB0151ENSkillsNetwork24597197-2022-01-01" target="_blank">Create an Instance of IBM Cloudant</a> lab.</p>
+    <p>Note: While working on this lab, you may be prompted to login 
+when ever your session expires. Use your credentials to authentiate. 
+This may happen when you step out or leave your Cloudant session 
+unattented.</p>
+    <h1>Exercise 1 - Launch Cloudant Dashboard</h1>
+    <p>Step 1: Click on <a href="https://cloud.ibm.com/resources?utm_medium=Exinfluencer&amp;utm_source=Exinfluencer&amp;utm_content=000026UJ&amp;utm_term=10006555&amp;utm_id=NA-SkillsNetwork-Channel-SkillsNetworkCoursesIBMDB0151ENSkillsNetwork24597197-2022-01-01" target="_blank" rel="external">cloud.ibm.com/resources</a>.</p>
+    <p>Step 2: Click on the Services chevron.</p>
+    <p>Step 3: Click on your instance of Cloudant.</p>
+    <details>
+      <summary>Click here for Hint</summary>
+      <blockquote>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/cloudant-instance-create4.png">
+      </blockquote>
+    </details>
+    <p>Step 4: Click on <code>Launch Dashboard</code>.</p>
+    <img src="Lab_-_Working_with_Databases_in_Cloudant_files/launch-dashboard.png">
+    <h1>Exercise 2 - Create Database</h1>
+    <p>Step 1: On the dashboard click on <code>Create Database</code>.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-database1.png" alt="">
+    </p>
+    <p>Step 2: Type <strong>housing</strong> as database name. Select 'Non-partitioned' and click on <code>Create</code>.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-database2.png" alt="">
+    </p>
+    <p>In a few moments the database will be created. and you will be taken to a page that looks like the one below.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-database3.png" alt="">
+    </p>
+    <h1>Exercise 3 - Insert documents</h1>
+    <p>Step 1: Click on <code>Create Document</code> to insert a document.</p>
+    <p>You will be presented the below screen, with a simple sample document.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-document1.png" alt="">
+    </p>
+    <p>Cloudant uses <code>_id</code> key to uniquely identify a document. It is equivalent to the primary key in RDBMS. You can use your own custom values for <code>_id</code>.</p>
+    <p>Copy and paste the below json document and click on <code>Create Document</code> button, as show in the image below.</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+	<span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>:<span class="hljs-string"><span class="hljs-string">"1"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"square_feet"</span></span>:<span class="hljs-number"><span class="hljs-number">1500</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"bedrooms"</span></span>:<span class="hljs-number"><span class="hljs-number">3</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"price"</span></span>:<span class="hljs-number"><span class="hljs-number">147890</span></span>
+}
+
+</code></pre>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-document2.png" alt="">
+    </p>
+    <p>Once the document is created, Cloudant will take you to a page with the list of documents.</p>
+    <p>Click on the <code>Table</code> view button. You should see a screen similar to the one below.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-document3.png" alt="">
+    </p>
+    <p>Follow the above mentioned process and insert the below 4 documents. Ensure you only insert one document at a time.</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">{
+	<span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>:<span class="hljs-string"><span class="hljs-string">"2"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"square_feet"</span></span>:<span class="hljs-number"><span class="hljs-number">1800</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"bedrooms"</span></span>:<span class="hljs-number"><span class="hljs-number">3</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"price"</span></span>:<span class="hljs-number"><span class="hljs-number">182650</span></span>
+}
+
+</code></pre>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+	<span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>:<span class="hljs-string"><span class="hljs-string">"3"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"square_feet"</span></span>:<span class="hljs-number"><span class="hljs-number">2000</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"bedrooms"</span></span>:<span class="hljs-number"><span class="hljs-number">3</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"price"</span></span>:<span class="hljs-number"><span class="hljs-number">201260</span></span>
+}
+
+</code></pre>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+	<span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>:<span class="hljs-string"><span class="hljs-string">"4"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"square_feet"</span></span>:<span class="hljs-number"><span class="hljs-number">2200</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"bedrooms"</span></span>:<span class="hljs-number"><span class="hljs-number">4</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"price"</span></span>:<span class="hljs-number"><span class="hljs-number">234980</span></span>
+}
+
+</code></pre>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+	<span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>:<span class="hljs-string"><span class="hljs-string">"5"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"square_feet"</span></span>:<span class="hljs-number"><span class="hljs-number">1100</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"bedrooms"</span></span>:<span class="hljs-number"><span class="hljs-number">2</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"price"</span></span>:<span class="hljs-number"><span class="hljs-number">114310</span></span>
+}
+
+</code></pre>
+    <p>After inserting the above documents your database should look like this.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-document4.png" alt="">
+    </p>
+    <p>Cloudant is a NoSQL database. It is a schema less database. All documents in a database need not have the same schema.</p>
+    <p>Let us insert two documents that have additional keys, compared to the previously inserted documents.</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+	<span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>:<span class="hljs-string"><span class="hljs-string">"6"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"square_feet"</span></span>:<span class="hljs-number"><span class="hljs-number">1400</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"bedrooms"</span></span>:<span class="hljs-number"><span class="hljs-number">3</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"price"</span></span>:<span class="hljs-number"><span class="hljs-number">123140</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"type"</span></span>:<span class="hljs-string"><span class="hljs-string">"apartment"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"floor"</span></span>:<span class="hljs-number"><span class="hljs-number">5</span></span>
+}
+
+</code></pre>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+	<span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>:<span class="hljs-string"><span class="hljs-string">"7"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"square_feet"</span></span>:<span class="hljs-number"><span class="hljs-number">3400</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"bedrooms"</span></span>:<span class="hljs-number"><span class="hljs-number">4</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"price"</span></span>:<span class="hljs-number"><span class="hljs-number">342720</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"type"</span></span>:<span class="hljs-string"><span class="hljs-string">"villa"</span></span>,
+	<span class="hljs-attr"><span class="hljs-attr">"car_parks"</span></span>:<span class="hljs-number"><span class="hljs-number">3</span></span>
+}
+
+</code></pre>
+    <p>After inserting the above documents your database should now look like this.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/create-document5.png" alt="">
+    </p>
+    <h1>Exercise 4 - Query documents</h1>
+    <p>Click on <code>Query</code> as shown in the image below.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/query-document1.png" alt="">
+    </p>
+    <p>You will see a screen like this.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/query-document2.png" alt="">
+    </p>
+    <p>Replace the default query with the one given below, and click on the <code>Run Query</code> button.</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {}
+}
+
+</code></pre>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/query-document3.png" alt="">
+    </p>
+    <p>You should see an output like this.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/query-document4.png" alt="">
+    </p>
+    <p>Try out these Cloudant queries.</p>
+    <p>Select all fields in all documents</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {}
+}
+
+</code></pre>
+    <p>Select all fields in all documents with _id greater than 4</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {
+      <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: {
+         <span class="hljs-attr"><span class="hljs-attr">"$gt"</span></span>: <span class="hljs-string"><span class="hljs-string">"4"</span></span>
+      }
+   }
+}
+
+</code></pre>
+    <p>Select all fields in all documents with _id less than 4</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {
+      <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: {
+         <span class="hljs-attr"><span class="hljs-attr">"$lt"</span></span>: <span class="hljs-string"><span class="hljs-string">"4"</span></span>
+      }
+   }
+}
+
+</code></pre>
+    <p>Select the fields _id, square_feet and price in all documents</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {},
+   <span class="hljs-attr"><span class="hljs-attr">"fields"</span></span>: [
+      <span class="hljs-string"><span class="hljs-string">"_id"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"price"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"square_feet"</span></span>
+   ]
+}
+
+</code></pre>
+    <p>Select the fields _id, square_feet and price in documents with _id less than 4</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {
+   <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: {
+         <span class="hljs-attr"><span class="hljs-attr">"$lt"</span></span>: <span class="hljs-string"><span class="hljs-string">"4"</span></span>
+      }
+   },
+   <span class="hljs-attr"><span class="hljs-attr">"fields"</span></span>: [
+      <span class="hljs-string"><span class="hljs-string">"_id"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"price"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"square_feet"</span></span>
+   ]
+}
+
+</code></pre>
+    <p>Select the fields _id, bedrooms and price in documents with _id greater than 2 and sort by _id ascending</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {
+      <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: {
+         <span class="hljs-attr"><span class="hljs-attr">"$gt"</span></span>: <span class="hljs-string"><span class="hljs-string">"2"</span></span>
+      }
+   },
+   <span class="hljs-attr"><span class="hljs-attr">"fields"</span></span>: [
+      <span class="hljs-string"><span class="hljs-string">"_id"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"price"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"square_feet"</span></span>
+   ],
+   <span class="hljs-attr"><span class="hljs-attr">"sort"</span></span>: [
+      {
+         <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"asc"</span></span>
+      }
+   ]
+}
+
+</code></pre>
+    <p>Select the fields _id, bedrooms and price in documents with _id greater than 2 and sort by _id descending</p>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">
+{
+   <span class="hljs-attr"><span class="hljs-attr">"selector"</span></span>: {
+      <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: {
+         <span class="hljs-attr"><span class="hljs-attr">"$gt"</span></span>: <span class="hljs-string"><span class="hljs-string">"2"</span></span>
+      }
+   },
+   <span class="hljs-attr"><span class="hljs-attr">"fields"</span></span>: [
+      <span class="hljs-string"><span class="hljs-string">"_id"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"price"</span></span>,
+      <span class="hljs-string"><span class="hljs-string">"square_feet"</span></span>
+   ],
+   <span class="hljs-attr"><span class="hljs-attr">"sort"</span></span>: [
+      {
+         <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"desc"</span></span>
+      }
+   ]
+}
+
+</code></pre>
+    <h1>Exercise 5 - Update documents</h1>
+    <p>Click on the database name <code>housing</code> as shown in the image below.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/update-document1.png" alt="">
+    </p>
+    <p>You will see a screen as in the image below.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/update-document2.png" alt="">
+    </p>
+    <p>Click on the document with _id 7.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/update-document3.png" alt="">
+    </p>
+    <p>The document will open up like this.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/update-document4.png" alt="">
+    </p>
+    <p>Change the number of <code>car parks</code> to 4 and add <code>facing</code> key with value <code>East</code>, as shown in the image below. Click <code>Save Changes</code> to save the document.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/update-document5.png" alt="">
+    </p>
+    <h1>Exercise 6 - Delete documents</h1>
+    <p>Select the document you wish to delete and click on the delete icon as shown in the image below.</p>
+    <p>
+      <img src="Lab_-_Working_with_Databases_in_Cloudant_files/delete-document1.png" alt="">
+    </p>
+    <p>You will get a pop up asking "Are you sure you want to delete this doc?"</p>
+    <p>Click <code>OK</code>.</p>
+    <h1>Practice exercises</h1>
+    <blockquote>
+      <p><em>1. Create a database named <strong>diamonds</strong>.</em></p>
+    </blockquote>
+    <details>
+      <summary>Click here for Hint</summary>
+      <p>Click on <code>Create Database</code></p>
+      <p>Enter <strong>diamonds</strong> as the database name.</p>
+      <p>Select 'Non-partitioned'.</p>
+      <p>Click on <code>Create</code></p>
+      <p>Refer to Exercise 2 if you wish to revise this topic.</p>
+    </details>
+    <details>
+      <summary>Click here for Solution</summary>
+      <p>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/solution1.png" alt="">
+      </p>
+    </details>
+    <blockquote>
+      <p><em>2. Insert the below documents into the <strong>diamonds</strong> database.</em></p>
+    </blockquote>
+    <pre class="code-badge-pre"><div class="code-badge">
+        <div class="code-badge-language">json</div>
+        <div title="Copy to clipboard">
+            <i class="code-badge-copy-icon code-badge-copy-icon"></i>
+        </div>
+     </div><code class="hljs language-json">  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"1"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.31</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Ideal"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"J"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"SI2"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">62.2</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">54</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">339</span></span>
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"2"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.2</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Premium"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"E"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"SI2"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">60.2</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">62</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">351</span></span>
+  
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"3"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.32</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Premium"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"E"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"I1"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">60.9</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">58</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">342</span></span>
+
+  }
+  
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"4"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.3</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Good"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"J"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"SI1"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">63.4</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">54</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">349</span></span>
+
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"5"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.3</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Good"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"J"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"SI1"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">63.8</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">56</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">347</span></span>
+
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"6"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.3</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Very Good"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"J"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"SI1"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">62.7</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">59</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">349</span></span>
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"7"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.3</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Good"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"I"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"SI2"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">63.3</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">56</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">343</span></span>
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"8"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.23</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Very Good"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"E"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"VS2"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">63.8</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">55</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">339</span></span>
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"9"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.23</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Very Good"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"H"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"VS1"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">61</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">57</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">323</span></span>
+  }
+  
+  {
+    <span class="hljs-attr"><span class="hljs-attr">"_id"</span></span>: <span class="hljs-string"><span class="hljs-string">"10"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"carat"</span></span>: <span class="hljs-number"><span class="hljs-number">0.31</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"cut"</span></span>: <span class="hljs-string"><span class="hljs-string">"Very Good"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"color"</span></span>: <span class="hljs-string"><span class="hljs-string">"J"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"clarity"</span></span>: <span class="hljs-string"><span class="hljs-string">"SI1"</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"depth"</span></span>: <span class="hljs-number"><span class="hljs-number">59.4</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"table"</span></span>: <span class="hljs-number"><span class="hljs-number">62</span></span>,
+    <span class="hljs-attr"><span class="hljs-attr">"price"</span></span>: <span class="hljs-number"><span class="hljs-number">346</span></span>
+  }
+
+</code></pre>
+    <details>
+      <summary>Click here for Hint</summary>
+      <p>Click on <code>Create Document</code></p>
+      <p>Copy and paste the document in the text box.</p>
+      <p>Click on <code>Create Document</code></p>
+      <p>Refer to Exercise 3 if you wish to revise this topic.</p>
+    </details>
+    <details>
+      <summary>Click here for Solution</summary>
+      <p>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/solution2.png" alt="">
+      </p>
+    </details>
+    <blockquote>
+      <p><em>3. Write a query to fetch all documents</em></p>
+    </blockquote>
+    <details>
+      <summary>Click here for Hint</summary>
+      <p>Go to the <strong>Query</strong> page.</p>
+      <p>Write the query in JSON form in the query box.</p>
+      <p>Click on <code>Run Query</code></p>
+      <p>Refer to Exercise 4 if you wish to revise this topic.</p>
+    </details>
+    <details>
+      <summary>Click here for Solution</summary>
+      <p>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/solution3.png" alt="">
+      </p>
+    </details>
+    <blockquote>
+      <p><em>4. Write a query to fetch all documents with <code>_id</code> greater than 2</em></p>
+    </blockquote>
+    <details>
+      <summary>Click here for Hint</summary>
+      <p>Go to the <strong>Query</strong> page.</p>
+      <p>Write the query in JSON form in the query box.</p>
+      <p>Click on <code>Run Query</code></p>
+      <p>Refer to Exercise 4 if you wish to revise this topic.</p>
+    </details>
+    <details>
+      <summary>Click here for Solution</summary>
+      <p>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/solution4.png" alt="">
+      </p>
+    </details>
+    <blockquote>
+      <p><em>5. Write a query to fetch all documents with <code>_id</code> less than 4</em></p>
+    </blockquote>
+    <details>
+      <summary>Click here for Hint</summary>
+      <p>Go to the <strong>Query</strong> page.</p>
+      <p>Write the query in JSON form in the query box.</p>
+      <p>Click on <code>Run Query</code></p>
+      <p>Refer to Exercise 4 if you wish to revise this topic.</p>
+    </details>
+    <details>
+      <summary>Click here for Solution</summary>
+      <p>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/solution5.png" alt="">
+      </p>
+    </details>
+    <blockquote>
+      <p><em>6. Set the price of the diamond with <code>_id</code> 7 to 352</em></p>
+    </blockquote>
+    <details>
+      <summary>Click here for Hint</summary>
+      <p>From the list of documents, click on the document with <code>_id</code> 7.</p>
+      <p>Make the changes.</p>
+      <p>Click on <code>Save Changes</code></p>
+      <p>Refer to Exercise 5 if you wish to revise this topic.</p>
+    </details>
+    <details>
+      <summary>Click here for Solution</summary>
+      <p>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/solution6.png" alt="">
+      </p>
+    </details>
+    <blockquote>
+      <p><em>7. Delete the document with <code>_id</code> 3</em></p>
+    </blockquote>
+    <details>
+      <summary>Click here for Hint</summary>
+      <p>From the list of documents, select the document with _id 3.</p>
+      <p>Click on the delete icon.</p>
+      <p>Refer to Exercise 6 if you wish to revise this topic.</p>
+    </details>
+    <details>
+      <summary>Click here for Solution</summary>
+      <p>
+        <img src="Lab_-_Working_with_Databases_in_Cloudant_files/solution7.png" alt="">
+      </p>
+    </details>
+    <h2>Authors</h2>
+    <p>Ramesh Sannareddy</p>
+    <h3>Other Contributors</h3>
+    <p>Rav Ahuja</p>
+    <h2>Change Log</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date (YYYY-MM-DD)</th>
+          <th>Version</th>
+          <th>Changed By</th>
+          <th>Change Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2021-10-25</td>
+          <td>0.5</td>
+          <td>Kathy An</td>
+          <td>Updated lab instructions</td>
+        </tr>
+        <tr>
+          <td>2021-04-28</td>
+          <td>0.4</td>
+          <td>Steve Ryan</td>
+          <td>Changed IBM cloud links to markdown format</td>
+        </tr>
+        <tr>
+          <td>2021-04-14</td>
+          <td>0.3</td>
+          <td>Steve Ryan</td>
+          <td>Review pass</td>
+        </tr>
+        <tr>
+          <td>2021-04-13</td>
+          <td>0.2</td>
+          <td>Ramesh Sannareddy</td>
+          <td>Added hints and solutions to practice exercises</td>
+        </tr>
+        <tr>
+          <td>2021-04-6</td>
+          <td>0.1</td>
+          <td>Ramesh Sannareddy</td>
+          <td>Created initial version of the lab</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Copyright (c) 2021 IBM Corporation. All rights reserved.</p>
+    <script>window.addEventListener('load', function() {
+snFaculty.inject();
+});</script>
+    <script src="Lab_-_Working_with_Databases_in_Cloudant_files/inject.43989f87.js"></script>
+    <script src="Lab_-_Working_with_Databases_in_Cloudant_files/highlight.min.js"></script>
+    <script src="Lab_-_Working_with_Databases_in_Cloudant_files/highlightjs-badge.min.js"></script>
+  
+
+<style>
+@media print {
+   .code-badge { display: none; }
+}
+    .code-badge-pre {
+        position: relative;
+    }
+    .code-badge {
+        display: flex;
+        flex-direction: row;
+        white-space: normal;
+        background: transparent;
+        background: #333;
+        color: white;
+        font-size: 0.875em;
+        opacity: 0.5;
+        transition: opacity linear 0.5s;
+        border-radius: 0 0 0 7px;
+        padding: 5px 8px 5px 8px;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .code-badge.active {
+        opacity: 0.8;
+    }
+
+    .code-badge:hover {
+        opacity: .95;
+    }
+
+    .code-badge a,
+    .code-badge a:hover {
+        text-decoration: none;
+    }
+
+    .code-badge-language {
+        margin-right: 10px;
+        font-weight: 600;
+        color: goldenrod;
+    }
+    .code-badge-copy-icon {
+        font-size: 1.2em;
+        cursor: pointer;
+        padding: 0 7px;
+        margin-top:2;
+    }
+    .fa.text-success:{ color: limegreen !important }
+</style><div id="CodeBadgeTemplate" style="display:none">
+    <div class="code-badge">
+        <div class="code-badge-language">{{language}}</div>
+        <div title="Copy to clipboard">
+            <i class="{{copyIconClass}} code-badge-copy-icon"></i>
+        </div>
+     </div>
+</div></body></html>

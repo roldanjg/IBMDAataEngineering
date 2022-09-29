@@ -1,0 +1,8 @@
+SISTEM MANAGEMENT DB2:
+	SELECT * FROM SYSIBM.SYSTABLES;
+SISTEM MANAGEMENT POSTGRES:
+	BACKUP:
+		CREATE FULL BACKUP:
+			pg_dump --username=postgres --host=localhost restored_demo > restored_demo_backup.sql
+		AFTER RESTORE BACKUP:
+			    SELECT pg_catalog.set_config('search_path', 'bookings', false);

@@ -1,0 +1,48 @@
+-----MyDimDate----- dateid,date,Year,Quarter,QuarterName,Month,Monthname,Day,Weekday,WeekdayName
+Field Name             Details
+dateid                 Primary Key - Id of the Date
+date                   full date derived from the Date ﬁeld of the original data
+Year                   Year derived from the Date ﬁeld of the original data. Example: 2010
+Quarter                Quarter number derived from the month ﬁeld of the original data. Example: 1, 2, 3, 4
+QuarterName            Quarter name derived from the month ﬁeld of the original data. Example: Q1, Q2, Q3, Q4  
+Month                  Month number derived from the Date ﬁeld of the original data. range[1-12]
+Monthname              Month name derived from the Date ﬁeld of the original data. Example: March
+Weekday                day number derived from the Date ﬁeld of the original data. range[1-7]
+WeekdayName            day name derived from the Dateº ﬁeld of the original data.
+
+
+
+-----MyDimWaste-----
+Field Name             Details
+wasteid                Primary Key - Id of the Waste Type
+wastetype              Waste type name derived from the Waste Type ﬁeld of the original data.
+
+-----MyDimZone-----
+Field Name             Details
+zoneid                 Primary Key - Id of the Collection Zone
+collectionzone         collection zone name derived from the Collection Zone ﬁeld of the original data.
+collectioncity         City name derived from the City ﬁeld of the original data. 
+
+
+-----MyFactTrips-----
+Field Name             Details
+tripid                 Primary Key. Id derived from the Trip number ﬁeld of the original data.
+zoneid                 Foreing Key from  MyDimZone table Id.
+wasteid                Foreing Key from  MyDimWaste table Id.
+dateid                 Foreing Key from  MyDimDate table Id.
+wastecollectedtons     Tons of collected waste number in tons, derived from the original data.
+
+
+
+quarter             Quarter number derived from the month ﬁeld of the original data. Example: 1, 2, 3, 4
+quartername         Quarter name derived from the month ﬁeld of the original data. Example: Q1, Q2, Q3, Q4
+
+Field Name          Details
+
+billid
+Primary key - Unique identiﬁer for every bill
+customerid Foreign Key - Id of the customer
+monthid
+Foreign Key - Id of the month. We can resolve the billed month info using this
+billedamount Amount charged by the cloud services provided for that month in USD
+
