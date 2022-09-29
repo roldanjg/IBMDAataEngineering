@@ -1,0 +1,11 @@
+--2022-07-05 16:30:05--  https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DB0201EN-SkillsNetwork/labs/FinalModule_Coursera_V5/data/ChicagoCensusData.csv?utm_medium=Exinfluencer
+Resolving cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud (cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud)... 169.63.118.104
+Connecting to cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud (cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud)|169.63.118.104|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3929 (3,8K) [text/csv]
+Saving to: ‘ChicagoCensusData.csv?utm_medium=Exinfluencer’
+
+          ChicagoCe   0%[                    ]       0  --.-KB/s               ChicagoCensusData.c 100%[===================>]   3,84K  --.-KB/s    in 0s      
+
+2022-07-05 16:30:07 (309 MB/s) - ‘ChicagoCensusData.csv?utm_medium=Exinfluencer’ saved [3929/3929]
+
